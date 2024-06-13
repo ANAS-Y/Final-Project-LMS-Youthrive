@@ -1,0 +1,24 @@
+{
+  "name": "library-management-system",
+  "version": "1.0.0",
+  "description": "A project develop by Anas Yunusa Adamu for Youthrive Program 2024, library management system to manage library process and Books",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "ANAS YUNUSA ADAMU",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "chai": "^5.1.1",
+    "chai-http": "^4.4.0",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mocha": "^10.4.0",
+    "mongodb": "^6.7.0",
+    "mongoose": "^8.4.1"
+  }
+}
