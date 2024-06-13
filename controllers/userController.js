@@ -36,7 +36,7 @@ exports.loginUser = async (req, res) => {
 };
 
 // Get all users (admin only)
-exports.getUsers = async (req, res) => {
+exports.getUsers2 = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -44,5 +44,19 @@ exports.getUsers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+// Get all users (admin only)
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.status(200).json({ users });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Other controller methods...
+
 
 // Define other controller functions similarly...

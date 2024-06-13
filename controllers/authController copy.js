@@ -7,12 +7,11 @@ const jwt = require('jsonwebtoken');
 exports.registerUser = async (req, res) => {
   try {
   
-    const { username, email, password } = req.body; //{ "username":"Ali", "email":"admin@gmail.com","password":"12345678"};
-
+    const { username, email, password } = req.body; 
     // Check if all fields are provided
-    //if (!username || !email || !password) {
-       // return //res.status(400).json({ error: 'All fields are required' });
-    //}
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -61,6 +60,17 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Get all users (admin only)
+exports.getUsers = async (req, res) => {
+  try {
+      const users = await User.find().select('-password');
+      res.status(200).json({ users });
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
+};
+
 
 // Logout user
 exports.logoutUser = (req, res) => {
