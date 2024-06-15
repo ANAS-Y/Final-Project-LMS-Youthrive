@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jtable/2.4.0/themes/metro/darkgray/jtable.min.css" rel="stylesheet">
+    <style>
+        .bd-placeholder-img {
+          font-size: 1.125rem;
+          text-anchor: middle;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+        }
+  
+        @media (min-width: 768px) {
+          .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+          }
+        }
+      </style>
+      
+</head>
+<body>
+    <body>
+    
+        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+          <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Library Management</a>
+          <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+          <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+              <a class="nav-link px-3" href="../auth/login" id="logoutBtn">Sign out</a>
+            </div>
+          </div>
+        </header>
+        
+        <div class="container-fluid">
+          <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+              <div class="position-sticky pt-3">
+                <ul class="nav flex-column" id="sidebarLinks">
+                  <!-- Links will be dynamically added here based on user role -->
+                </ul>
+    
+                </ul>
+              </div>
+            </nav>
+        
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Add New Book</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                  <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary"></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"></button>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                    <span data-feather="calendar"></span>
+                  </button>
+                </div>
+              </div>
+        
+              <div id="alertContainer"></div>
+              <div id="bookTableContainer">
+                <main class="container">
+                    <div id="alertContainer"></div>
+                    <form id="addBookForm">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="author">Author</label>
+                            <input type="text" class="form-control" id="author" name="author" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="isbn">ISBN</label>
+                            <input type="text" class="form-control" id="ISBN" name="ISBN" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="publishedDate">Category</label>
+                            <input type="text" class="form-control" id="category" name="category" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="publishedDate">Available Copies</label>
+                            <input type="number" class="form-control" id="available_copies" name="available_copies" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Book</button>
+                    </form>
+                </main>
+                
+                <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                <script>
+                    $(document).ready(function() {
+                        $('#addBookForm').on('submit', function(e) {
+                            e.preventDefault();
+                
+                            const bookData = {
+                                title: $('#title').val(),
+                                author: $('#author').val(),
+                                ISBN: $('#ISBN').val(),
+                                category: $('#category').val(),
+                                available_copies: $('#available_copies').val()
+                            };
+                
+                            $.ajax({
+                                type: 'POST',
+                                url: '/api/books/add',
+                                data: JSON.stringify(bookData),
+                                contentType: 'application/json',
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                                },
+                                success: function(response) {
+                                    $('#alertContainer').html(`
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            Book added successfully!
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    `);
+                                    $('#addBookForm')[0].reset();
+                                },
+                                error: function(xhr) {
+                                    $('#alertContainer').html(`
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            Error adding book!
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    `);
+                                }
+                            });
+                        });
+                    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+            // Assuming user role is available in localStorage
+        
+            const userRole= localStorage.getItem("userRole");
+            const sidebarLinks = document.getElementById("sidebarLinks");
+            const alertContainer = document.getElementById("alertContainer");
+        
+            if (!userRole) {
+              const alert = document.createElement("div");
+              alert.className = "alert alert-danger";
+              alert.textContent = "User role not found. Please log in again.";
+              alertContainer.appendChild(alert);
+              return;
+            }
+        
+            const adminLinks = [
+              { href: "../auth/dashboard", icon: "home", text: "Dashboard" },
+              { href: "books", icon: "file", text: "Books" },
+              { href: "../auth/users", icon: "user", text: "Members" },
+              { href: "#", icon: "shopping-carts", text: "Borrowed Books" },
+              { href: "transactions", icon: "bar-chart-2", text: "Reports" },
+              { href: "#", icon: "layers", text: "Integrations" },
+              { href: "#", icon: "settings", text: "Admin Settings" }
+            ];
+        
+            const userLinks = [
+              { href: "dashboard", icon: "home", text: "Dashboard" },
+              { href: "books", icon: "file", text: "Books" },
+              { href: "#", icon: "shopping-cart", text: "Borrowed Books" },
+              { href: "#", icon: "bar-chart-2", text: "Reports" }
+            ];
+        
+            const links = userRole === "admin" ? adminLinks : userLinks;
+        
+            links.forEach(link => {
+              const li = document.createElement("li");
+              li.className = "nav-item";
+              li.innerHTML = `<a class="nav-link" href="${link.href}">
+                                <span data-feather="${link.icon}"></span>
+                                ${link.text}
+                              </a>`;
+              sidebarLinks.appendChild(li);
+            });
+        
+            feather.replace();
+        
+            document.getElementById("logoutBtn").addEventListener("click", function() {
+              localStorage.removeItem("userRole");
+              location.href = "login";
+            });
+        });
+                </script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+                <script src="js/bootstrap.bundle.min.js"></script>
+                
+              </div>
+            </main>
+          </div>
+        </div>
+        
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script src="js/dashboard.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jtable/2.4.0/jquery.jtable.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        
+          </body>
+        </html>

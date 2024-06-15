@@ -15,7 +15,7 @@ exports.issueBook = async (req, res) => {
       book: bookId,
       issue_date: new Date(),
       return_date: null,
-      status: 'issued',
+      status: 'requested',
     });
     await transaction.save();
     book.available_copies -= 1;

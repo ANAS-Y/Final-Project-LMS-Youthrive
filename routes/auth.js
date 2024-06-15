@@ -9,7 +9,7 @@ router.get('/login', (req, res) => {
 });
 // Define the route for Dashboard
 router.get('/dashboard', ensureAuth, ensureAdmin, (req, res) => {
-  res.sendFile('dashboard.html', { root: 'public' }); // Serve dashboard.html from the public directory
+  res.sendFile('home.html', { root: 'public' }); // Serve dashboard.html from the public directory
 });
 
 // Define the route for register

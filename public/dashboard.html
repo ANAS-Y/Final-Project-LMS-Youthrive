@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Anas Yunusa Adamu">
     <meta name="generator" content="Anas New Sky">
-    <title>Library Management Dashboard</title>
+    <title>Dashboard</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
 
@@ -45,7 +45,7 @@
   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
   <div class="navbar-nav">
     <div class="nav-item text-nowrap">
-      <a class="nav-link px-3" href="#" id="logoutBtn">Sign out</a>
+      <a class="nav-link px-3" href="login" id="logoutBtn">Sign out</a>
     </div>
   </div>
 </header>
@@ -126,8 +126,8 @@
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Assuming user role is available in localStorage
-    const userRole = localStorage.getItem("userRole");
 
+    const userRole= localStorage.getItem("userRole");
     const sidebarLinks = document.getElementById("sidebarLinks");
     const alertContainer = document.getElementById("alertContainer");
 
@@ -140,18 +140,18 @@
     }
 
     const adminLinks = [
-      { href: "#", icon: "home", text: "Dashboard" },
-      { href: "#", icon: "file", text: "Books" },
-      { href: "#", icon: "shopping-cart", text: "Members" },
-      { href: "#", icon: "users", text: "Borrowed Books" },
-      { href: "#", icon: "bar-chart-2", text: "Reports" },
+      { href: "dashboard", icon: "home", text: "Dashboard" },
+      { href: "books", icon: "file", text: "Books" },
+      { href: "Users", icon: "user", text: "Members" },
+      { href: "#", icon: "shopping-carts", text: "Borrowed Books" },
+      { href: "transactions", icon: "bar-chart-2", text: "Reports" },
       { href: "#", icon: "layers", text: "Integrations" },
       { href: "#", icon: "settings", text: "Admin Settings" }
     ];
 
     const userLinks = [
-      { href: "#", icon: "home", text: "Dashboard" },
-      { href: "#", icon: "file", text: "Books" },
+      { href: "dashboard", icon: "home", text: "Dashboard" },
+      { href: "books", icon: "file", text: "Books" },
       { href: "#", icon: "shopping-cart", text: "Borrowed Books" },
       { href: "#", icon: "bar-chart-2", text: "Reports" }
     ];
@@ -172,7 +172,7 @@
 
     document.getElementById("logoutBtn").addEventListener("click", function() {
       localStorage.removeItem("userRole");
-      window.location.href = "login";
+      location.href = "login";
     });
 
     // jTable initialization

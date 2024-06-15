@@ -56,7 +56,8 @@ exports.loginUser = async (req, res) => {
     }
     const token = jwt.sign({ id: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
     res.cookie('token', token, { httpOnly: true });
-    res.status(200).json({token});
+    // Store the token in localStorage
+    res.status(200).json({'token':token,"role":user.role,user:user._id});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -65,8 +66,8 @@ exports.loginUser = async (req, res) => {
 // Logout user
 exports.logoutUser = (req, res) => {
   res.cookie('token', '', { maxAge: 1 });
-  res.status(200).json({ message: 'Logged out successfully' });
-  location.href ="/";
+  res.status(200).json('Logged out successfully' );
+  location.href ="login";
 };
 // Get all users (admin only)
 exports.getUsers = async (req, res) => {
