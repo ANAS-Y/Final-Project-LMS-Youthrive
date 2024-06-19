@@ -24,7 +24,7 @@ exports.getBooks = async (req, res) => {
 
 exports.getAllBooks = async (req, res) => {
   try {
-      const books = await Book.find();
+      const books = await Book.find( { available_copies: { $gt: 0 } });
       res.json({ books });
   } catch (err) {
       res.status(500).json({ error: err.message });
@@ -43,8 +43,7 @@ exports.getBookById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// Update a book
+//Update a book
 exports.updateBook = async (req, res) => {
     try {
         const { id } = req.params;

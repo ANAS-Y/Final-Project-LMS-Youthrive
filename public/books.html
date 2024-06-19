@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>All Books</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.css" rel="stylesheet">
 </head>
+
 <body>
+    <div id="header"></div>
     <div class="container mt-4">
         <h2>All Books</h2>
         <div id="alertContainer"></div>
@@ -38,7 +41,7 @@
              <tr>
               <td>${book.title}</td>
               <td id="userId">${book.author}</td>
-              <td>${book.isbn}</td>
+              <td>${book.ISBN}</td>
               <td>${book.available_copies}</td>
               <td>
                 <button class="borow-book btn btn-primary btn-sm" data-id="${book._id}">Borrow</button>
@@ -58,13 +61,21 @@
                                 url: '/api/transactions/issue',
                                 data: { bookId:bookId, userId:user },
                                 success: function() {
-                                    alert('Request supmited successfully');
-                                    location.reload();
+                                    //alert('Request supmited successfully');
+                                    //location.reload();
+                                    $('#alertContainer').html(`
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            Request supmited successfully
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    `);
                                 },
                                 error: function(xhr) {
                                     $('#alertContainer').html(`
                                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            Error: ${xhr.responseJSON.error}
+                                           You have already borrowed this book and not returned it yet or we have alredy proccessed your request!
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -135,7 +146,17 @@
                 }
             });
         });
+            // Initialize DataTable after data is loaded
+            $('#transactionsTable').DataTable();
     </script>
+ <script>
+    fetch('header.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('header').innerHTML = html;
+      });
+  </script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Transaction Status</title>
+  <link href="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.css" rel="stylesheet">
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/jquery.dataTables.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="mb-4">Update Transaction Status</h1>
+    <table id="transactionsTable" class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>ISBN</th>
+          <th>Borrower</th>
+          <th>Request Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Content will be populated by jQuery -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jtable/2.4.0/jquery.jtable.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      // Fetch transactions via AJAX
+      $.ajax({
+        type: 'post',
+        url: '/api/transactions/transactions',
+        success: function(response) {
+          const transactions = response.transactions;
+          transactions.forEach(transaction => {
+            $('#transactionsTable tbody').append(`
+              <tr>
+                <td>${transaction.book.title}</td>
+                <td>${transaction.book.author}</td>
+                <td>${transaction.book.ISBN}</td>
+                <td>${transaction.user.username}</td>
+                <td>${new Date(transaction.issue_date).toLocaleDateString()}</td>
+                <td>
+                 <button class="btn btn-secondary btn-sm" onclick="updateStatus('${transaction._id}', 'issued')">Mark as Issued Book!</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteTransaction('${transaction._id}')">Delete</button>
+                </td>
+              </tr>
+            `);
+          });
+
+          // Initialize DataTable after data is loaded
+          $('#transactionsTable').DataTable();
+        },
+        error: function(error) {
+          alert('Failed to fetch transactions');
+        }
+      });
+    });
+
+    function updateStatus(transactionId, status) {
+      $.ajax({
+        type: 'put',
+        url: '/api/transactions/updateStatus',
+        data: { transactionId, status },
+        success: function(response) {
+          alert('Transaction status updated successfully!');
+          location.reload();
+        },
+        error: function(error) {
+          alert('Error updating transaction status');
+        }
+      });
+    }
+
+    function deleteTransaction(transactionId) {
+      if(confirm('Are you sure you want to delete this transaction?')) {
+        $.ajax({
+          type: 'delete',
+          url: '/api/transactions/delete',
+          data: { transactionId },
+          success: function(response) {
+            alert('Transaction deleted successfully!');
+            location.reload();
+          },
+          error: function(error) {
+            alert('Error deleting transaction');
+          }
+        });
+      }
+    }
+              // Initialize DataTable after data is loaded
+              $('#transactionsTable').DataTable();
+  </script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
+</body>
+</html>
