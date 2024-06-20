@@ -20,7 +20,7 @@ router.get('/register',ensureAuth, ensureAdmin, (req, res) => {
 router.get('/usersRegister', (req, res) => {
   res.sendFile('usersRegister.html', { root: 'public' }); // Serve register.html from the public directory
  });
- router.post('/uregister', authController.registerUser);
+ router.post('/uregister', authController.registerUser2);
 router.post('/login', authController.loginUser);
 router.post('/register',ensureAuth, ensureAdmin, authController.registerUser);
 //router.post('/users', authController.getUsers);
