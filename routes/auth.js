@@ -19,6 +19,10 @@ router.get('/register', (req, res) => {
 router.post('/login', authController.loginUser);
 router.post('/register', authController.registerUser);
 //router.post('/users', authController.getUsers);
+router.get('/header.html', (req, res) => {
+  res.sendFile('header.html', { root: 'public' }); 
+ });
+
 
 router.post('/users', ensureAuth, ensureAdmin, authController.getUsers);
 // Update a user (admin only)

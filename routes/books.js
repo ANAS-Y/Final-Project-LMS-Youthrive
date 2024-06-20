@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const bookController = require('../controllers/bookController'); // Ensure this path is correct
+const bookController = require('../controllers/bookController'); 
+const { ensureAuth, ensureAdmin } = require('../middleware/auth');
 
 // Route to add a new book
-router.post('/add', bookController.addBook);
+router.post('/add',ensureAuth, ensureAdmin, bookController.addBook);
 router.get('/add', (req, res) => {
     res.sendFile('add_books.html', { root: 'public' }); 
    });
@@ -23,9 +24,9 @@ router.get('/:id', bookController.getBookById);
 router.post('/books', bookController.getAllBooks);
 
 // Route to update a book by ID
-router.put('/:id', bookController.updateBook);
+router.put('/:id', ensureAuth, ensureAdmin, bookController.updateBook);
 
 // Route to delete a book by ID
-router.delete('/:id', bookController.deleteBook);
+router.delete('/:id',ensureAuth, ensureAdmin, bookController.deleteBook);
 
 module.exports = router;

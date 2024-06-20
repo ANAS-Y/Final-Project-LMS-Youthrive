@@ -22,6 +22,9 @@ router.get('/users', (req, res) => {
     res.sendFile('user.html', { root: 'public' }); // Serve register.html from the public directory
 
 });
+router.get('/header.html', (req, res) => {
+    res.sendFile('header.html', { root: 'public' }); 
+   });
 
 // Define other routes similarly...
 
