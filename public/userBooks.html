@@ -17,7 +17,6 @@
             </tbody>
         </table>
     </div>
-    <script src="/js/scripts.js"> </script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -43,8 +42,6 @@
                     // borrow book button click event
                     $('.borow-book').click(function() {
                         const user= localStorage.getItem("user");
-
-                   
                         const bookId = $(this).data('id');
                             $.ajax({
                                 type: 'post',
@@ -75,54 +72,6 @@
                             });
                         
                     });
-
-                    // Delete book button click event
-                    $('.delete-book').click(function() {
-                        const bookId = $(this).data('id');
-                        if (confirm('Are you sure you want to delete this book?')) {
-                            $.ajax({
-                                type: 'DELETE',
-                                url: `/api/books/books/${bookId}`,
-                                success: function() {
-                                    alert('Book deleted successfully');
-                                    location.reload();
-                                },
-                                error: function(xhr) {
-                                    $('#alertContainer').html(`
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            Error: ${xhr.responseJSON.error}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    `);
-                                }
-                            });
-                        }
-                    });
-
-                    // Borrow book button click event
-                    $('.borrow-book2').click(function() {
-                        const bookId = $(this).data('id');
-                        $.ajax({
-                            type: 'POST',
-                            url: `/api/books/books/borrow/${bookId}`,
-                            success: function() {
-                                alert('Book borrowed successfully');
-                                location.reload();
-                            },
-                            error: function(xhr) {
-                                $('#alertContainer').html(`
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        Error: ${xhr.responseJSON.error}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                `);
-                            }
-                        });
-                    });
                 },
                 error: function(xhr) {
                     $('#alertContainer').html(`
@@ -136,76 +85,8 @@
                 }
             });
         });
-            // Initialize DataTable after data is loaded
-            $('#transactionsTable').DataTable();
+            
     </script>
-  <script>
-    $(document).ready(function() {
-      // Fetch transactions via AJAX
-      $.ajax({
-        type: 'post',
-        url: '/api/transactions/transactions',
-        success: function(response) {
-          const transactions = response.transactions;
-          transactions.forEach(transaction => {
-            $('#transactionsTable tbody').append(`
-              <tr>
-                <td>${transaction.book.title}</td>
-                <td>${transaction.book.author}</td>
-                <td>${transaction.book.ISBN}</td>
-                <td>${transaction.user.username}</td>
-                <td>${new Date(transaction.issue_date).toLocaleDateString()}</td>
-                <td>
-                 <button class="btn btn-secondary btn-sm" onclick="updateStatus('${transaction._id}', 'issued')">Mark as Issued Book!</button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteTransaction('${transaction._id}')">Delete</button>
-                </td>
-              </tr>
-            `);
-          });
-
-          // Initialize DataTable after data is loaded
-          $('#transactionsTable').DataTable();
-        },
-        error: function(error) {
-          alert('Failed to fetch transactions');
-        }
-      });
-    });
-
-    function updateStatus(transactionId, status) {
-      $.ajax({
-        type: 'put',
-        url: '/api/transactions/updateStatus',
-        data: { transactionId, status },
-        success: function(response) {
-          alert('Transaction status updated successfully!');
-          location.reload();
-        },
-        error: function(error) {
-          alert('Error updating transaction status');
-        }
-      });
-    }
-
-    function deleteTransaction(transactionId) {
-      if(confirm('Are you sure you want to delete this transaction?')) {
-        $.ajax({
-          type: 'delete',
-          url: '/api/transactions/delete',
-          data: { transactionId },
-          success: function(response) {
-            alert('Transaction deleted successfully!');
-            location.reload();
-          },
-          error: function(error) {
-            alert('Error deleting transaction');
-          }
-        });
-      }
-    }
-              // Initialize DataTable after data is loaded
-              $('#transactionsTable').DataTable();
-  </script>
     <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
     <script src="/js/scripts.js"> </script>
     <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>

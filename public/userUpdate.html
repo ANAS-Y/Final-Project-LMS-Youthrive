@@ -1,16 +1,14 @@
 <div id="header">
   <div class="container mt-4 ">
-    <h1 class="mb-4">Borrowed Books</h1>
+    <h1 class="mb-4">Pending Requests</h1>
     <table id="transactionsTable" class="table table-striped table-bordered">
       <thead class="thead-dark">
         <tr>
           <th>Title</th>
           <th>Author</th>
           <th>ISBN</th>
-          <th>Borrower</th>
-          <th>Borrow Date</th>
-          <th>Return Date</th>
-          <th>Action</th>
+          <th>Request Date</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
@@ -24,13 +22,15 @@
   <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jtable/2.4.0/jquery.jtable.min.js"></script>
-  <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
+
   <script>
     $(document).ready(function() {
       // Fetch transactions via AJAX
+      const user= localStorage.getItem("user");
       $.ajax({
-        type: 'get',
-        url: '/api/transactions/issuedBooks',
+        type: 'post',
+        url: '/api/transactions/utransactions',
+        data: {user},
         success: function(response) {
           const transactions = response.transactions;
           transactions.forEach(transaction => {
@@ -39,12 +39,9 @@
                 <td>${transaction.book.title}</td>
                 <td>${transaction.book.author}</td>
                 <td>${transaction.book.ISBN}</td>
-                <td>${transaction.user.username}</td>
                 <td>${new Date(transaction.issue_date).toLocaleDateString()}</td>
-                <td>${new Date(transaction.return_date).toLocaleDateString()}</td>
-                <td>
-                  <button class="btn btn-warning btn-sm mt-5" onclick="updateStatus('${transaction._id}', 'returned')">Mark as Book Returned!</button>
-                </td>
+                 <td>${transaction.status}</td>
+
               </tr>
             `);
           });
@@ -61,7 +58,7 @@
     function updateStatus(transactionId, status) {
       $.ajax({
         type: 'put',
-        url: '/api/transactions/return',
+        url: '/api/transactions/updateStatus',
         data: { transactionId, status },
         success: function(response) {
           alert('Transaction status updated successfully!');
@@ -89,16 +86,16 @@
         });
       }
     }
+              // Initialize DataTable after data is loaded
+              $('#transactionsTable').DataTable();
   </script>
-    
-      <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
-      <script src="/js/scripts.js"> </script>
-            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-            <script src="js/bootstrap.bundle.min.js"></script>
-            <script src="js/dashboard.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jtable/2.4.0/jquery.jtable.min.js"></script>
-            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
+    <script src="/js/scripts.js"> </script>              <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+              <script src="js/bootstrap.bundle.min.js"></script>
+              <script src="js/dashboard.js"></script>
+              <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/jtable/2.4.0/jquery.jtable.min.js"></script>
+              <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </body>
 </html>

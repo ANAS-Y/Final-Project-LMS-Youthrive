@@ -12,6 +12,10 @@ router.get('/add', (req, res) => {
 router.get('/books', (req, res) => {
    res.sendFile('books.html', { root: 'public' }); 
    });
+   // Route to get all books for User
+router.get('/userBooks', (req, res) => {
+   res.sendFile('userBooks.html', { root: 'public' }); 
+   });
 
    router.get('/header.html', (req, res) => {
       res.sendFile('header.html', { root: 'public' }); 

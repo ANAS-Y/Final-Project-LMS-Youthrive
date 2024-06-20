@@ -18,6 +18,24 @@ exports.getTransactions = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.getUTransactions = async (req, res) => {
+  try {
+    const { user } = req.body;
+    const transactions = await Transaction.find({ status: 'requested', user:user })
+      .populate({
+        path: 'book',
+        select: 'title author ISBN',
+      })
+      .populate({
+        path: 'user',
+        select: 'username',
+      });
+      res.status(201).json({transactions});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.getReturnedBooks = async (req, res) => {
   try {
     const transactions = await Transaction.find({ status: 'returned' })
@@ -37,6 +55,23 @@ exports.getReturnedBooks = async (req, res) => {
 exports.getIssuedBooks = async (req, res) => {
   try {
     const transactions = await Transaction.find({ status: 'issued' })
+      .populate({
+        path: 'book',
+        select: 'title author ISBN',
+      })
+      .populate({
+        path: 'user',
+        select: 'username',
+      });
+      res.status(201).json({transactions});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.getUIssuedBooks = async (req, res) => {
+  try {
+    const {user} = req.body;
+    const transactions = await Transaction.find({ status: 'issued'})
       .populate({
         path: 'book',
         select: 'title author ISBN',
@@ -137,6 +172,19 @@ exports.getOverdueBooks = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getUOverdueBooks = async (req, res) => {
+  try {
+    //const {user} = req.body;
+    const overdueTransactions = await Transaction.find({
+      //user:user,
+      status: 'issued',
+      issue_date: { $lt: new Date(new Date() - 14 * 24 * 60 * 60 * 1000) }, // overdue by 14 days
+    }).populate('book user');
+    res.status(200).json({overdueTransactions});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.updateStatus = async (req, res) => {
   try {
@@ -145,8 +193,8 @@ exports.updateStatus = async (req, res) => {
     if (!transaction) {
       return res.status(400).json({ message: 'Invalid Transaction' });
     }
-    issue_date = new Date();
-    due_date = new Date((issue_date.getTime()) + 14 * 24 * 60 * 60 * 1000);
+    issue_date = new Date().getTime() - 14 * 24 * 60 * 60 * 1000;
+    due_date = new Date();//(issue_date.getTime()) + 14 * 24 * 60 * 60 * 1000);
     transaction.issue_date =  issue_date;
     transaction.return_date = due_date;
     transaction.status = status;
@@ -170,5 +218,28 @@ exports.deleteTransaction = async (req, res) => {
     res.status(500).json({ message: 'Error deleting transaction' });
   }
 };
+
+
+
+exports.getStats = async (req, res) => {
+  try {
+    const borrowedBooks = await Transaction.countDocuments({ status: 'issued' });
+    const returnedBooks = await Transaction.countDocuments({ status: 'returned' });
+    const availableBooks = await Book.countDocuments({ available_copies: { $gt: 0 } });
+    const overdueBooks = await Transaction.countDocuments({
+      status: 'issued',
+      issue_date: { $lt: new Date(new Date() - 14 * 24 * 60 * 60 * 1000) }, // overdue by 14 days
+    });
+    res.json({
+      borrowedBooks,
+      returnedBooks,
+      overdueBooks,
+      availableBooks
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 
 

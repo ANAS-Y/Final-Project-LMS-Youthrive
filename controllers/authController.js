@@ -67,7 +67,7 @@ exports.loginUser = async (req, res) => {
 exports.logoutUser = (req, res) => {
   res.cookie('token', '', { maxAge: 1 });
   res.status(200).json('Logged out successfully' );
-  location.href ="login";
+  location.href ="../auth/login";
 };
 // Get all users (admin only)
 exports.getUsers = async (req, res) => {
